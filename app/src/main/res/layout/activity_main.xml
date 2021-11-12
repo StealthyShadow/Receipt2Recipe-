@@ -10,43 +10,39 @@
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="78dp"
         android:text="Welcome to Reciept2Recipe"
         android:textAlignment="center"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toTopOf="@+id/ingredientRequest"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/ingredientRequest"
-        android:layout_width="wrap_content"
+        android:layout_width="303dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="32dp"
         android:text="Which ingredients do you have?"
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/ingredientEditText"
-        app:layout_constraintStart_toStartOf="@+id/ingredientEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcomeText" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/ingredientEditText"
-        android:layout_width="349dp"
-        android:layout_height="54dp"
-        android:layout_marginBottom="37dp"
+        android:layout_width="303dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="32dp"
         android:hint="Enter Ingredients Manually Here"
-        app:layout_constraintBottom_toTopOf="@+id/saveButton"
-        app:layout_constraintEnd_toEndOf="@+id/saveButton"
-        app:layout_constraintStart_toEndOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ingredientRequest" />
 
     <ImageButton
         android:id="@+id/imageButton"
         android:layout_width="74dp"
-        android:layout_height="69dp"
-        android:layout_marginBottom="84dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="62dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/viewButton"
@@ -57,11 +53,10 @@
         android:id="@+id/saveButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginBottom="9dp"
+        android:layout_marginTop="32dp"
         android:onClick="saveIngredient"
         android:text="Save Ingredient "
-        app:layout_constraintBottom_toTopOf="@+id/viewButton"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ingredientEditText" />
 
@@ -69,11 +64,11 @@
         android:id="@+id/viewButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="117dp"
+        android:layout_marginTop="32dp"
         android:onClick="viewIngredients"
         android:text="View Ingredient List"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton"
-        app:layout_constraintStart_toStartOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

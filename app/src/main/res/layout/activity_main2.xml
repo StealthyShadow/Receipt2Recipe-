@@ -8,13 +8,9 @@
 
     <ListView
         android:id="@+id/ingredientList"
-        android:layout_width="420dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="9dp"
-        android:layout_marginTop="106dp"
-        android:layout_marginEnd="9dp"
-        android:layout_marginBottom="68dp"
-        app:layout_constraintBottom_toTopOf="@+id/addMore"
+        android:layout_width="300dp"
+        android:layout_height="462dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,11 +18,12 @@
     <TextView
         android:id="@+id/welcome"
         android:layout_width="174dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="20dp"
         android:text="Your Ingredient List"
         android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/ingredientList"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,11 +31,11 @@
         android:id="@+id/addMore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="47dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="addMoreIngredients"
         android:text="Add More Ingredients"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ingredientList"
-        android:onClick="addMoreIngredients" />
+        app:layout_constraintTop_toBottomOf="@+id/ingredientList" />
 </androidx.constraintlayout.widget.ConstraintLayout>
