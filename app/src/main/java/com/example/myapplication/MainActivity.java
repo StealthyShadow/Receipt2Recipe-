@@ -44,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        imageView = findViewById(R.id.imageView);
+
+        getSupportActionBar().hide();
 
     }
 
@@ -157,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap bitmap;
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         String imgsave = MediaStore.Images.Media.insertImage(getContentResolver(), selectedImage, UUID.randomUUID().toString()+".png", "image");
-                        imageView.setImageBitmap(selectedImage);
+
 
                     }
                     break;
