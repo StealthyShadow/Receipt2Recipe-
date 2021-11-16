@@ -3,10 +3,12 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 
@@ -34,8 +36,19 @@ public class MainActivity extends AppCompatActivity {
 
         
     }
+
     public void viewIngredients(View view){
         Intent intent = new Intent(this,MainActivity2.class);
         startActivity(intent);
+    }
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    public void takePicture(View view){
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            startActivity(takePictureIntent);
+        } catch (ActivityNotFoundException e) {
+            // display error state to the user
+        }
     }
 }
