@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,7 +38,7 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
     SQLiteDatabase sqLiteDatabase;
-    ImageView imageView;
+
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
 
     @Override
@@ -100,15 +101,14 @@ public class MainActivity extends AppCompatActivity {
                     // Open the camera and get the photo
 
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(takePicture, 0);
+                    startActivityForResult(takePicture,0);
                 }
-                else if(optionsMenu[i].equals("Choose from Gallery")){
+                else if(optionsMenu[i].equals("Choose from Gallery")) {
 
                     // choose from  external storage
 
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , 1);
-
+                    startActivityForResult(pickPhoto,1);
                 }
                 else if (optionsMenu[i].equals("Exit")) {
                     dialogInterface.dismiss();
@@ -173,7 +173,9 @@ public class MainActivity extends AppCompatActivity {
 
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
+                                ImageView imageView = (ImageView) findViewById(R.id.imageView2);
                                 imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                                imageView.setVisibility(View.VISIBLE);
                                 cursor.close();
                             }
                         }
