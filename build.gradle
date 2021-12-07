@@ -3,6 +3,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url rootProject.projectDir.getAbsolutePath() + '/libraries' }
+        jcenter()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:7.0.2"

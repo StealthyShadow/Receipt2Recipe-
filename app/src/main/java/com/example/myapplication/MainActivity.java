@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -36,11 +37,63 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
+import android.util.Pair;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.example.myapplication.GraphicOverlay.Graphic;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+
 public class MainActivity extends AppCompatActivity {
     SQLiteDatabase sqLiteDatabase;
+    private static final String TAG = "MainActivity";
+    private ImageView mImageView;
+    private Button mTextButton;
+    private Bitmap mSelectedImage;
+    private GraphicOverlay mGraphicOverlay;
+    // Max width (portrait mode)
+    private Integer mImageMaxWidth;
+    // Max height (portrait mode)
+    private Integer mImageMaxHeight;
 
+    private static final int RESULTS_TO_SHOW = 3;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
 
+    private final PriorityQueue<Map.Entry<String, Float>> sortedLabels =
+            new PriorityQueue<>(
+                    RESULTS_TO_SHOW,
+                    new Comparator<Map.Entry<String, Float>>() {
+                        @Override
+                        public int compare(Map.Entry<String, Float> o1, Map.Entry<String, Float>
+                                o2) {
+                            return (o1.getValue()).compareTo(o2.getValue());
+                        }
+                    });
+
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +101,16 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
+        mImageView = findViewById(R.id.imageView2);
+        mTextButton = findViewById(R.id.textButton);
+
+        mGraphicOverlay = findViewById(R.id.graphic_overlay);
+        mTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                runTextRecognition();
+            }
+        });
     }
 
     public void saveIngredient(View view){
@@ -57,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
         DBHelper db = new DBHelper(sqLiteDatabase);
         db.saveIngredients(input.getText().toString(),"user");
         input.setText("");
-
-        
     }
 
     public void viewIngredients(View view){
@@ -173,8 +234,9 @@ public class MainActivity extends AppCompatActivity {
 
                                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                                 String picturePath = cursor.getString(columnIndex);
+                                getImage(picturePath);
                                 ImageView imageView = (ImageView) findViewById(R.id.imageView2);
-                                imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                                //imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 imageView.setVisibility(View.VISIBLE);
                                 cursor.close();
                             }
@@ -209,8 +271,151 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void runTextRecognition() {
+        InputImage image = InputImage.fromBitmap(mSelectedImage, 0);
+        TextRecognizer recognizer = TextRecognition.getClient();
+        mTextButton.setEnabled(false);
+        recognizer.process(image)
+                .addOnSuccessListener(
+                        new OnSuccessListener<Text>() {
+                            @Override
+                            public void onSuccess(Text texts) {
+                                mTextButton.setEnabled(true);
+                                processTextRecognitionResult(texts);
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                // Task failed with an exception
+                                mTextButton.setEnabled(true);
+                                e.printStackTrace();
+                            }
+                        });
+    }
 
+    private void processTextRecognitionResult(Text texts) {
+        List<Text.TextBlock> blocks = texts.getTextBlocks();
 
+        if (blocks.size() == 0) {
+            showToast("No text found");
+            return;
+        }
 
+        mGraphicOverlay.clear();
+        for (int i = 0; i < blocks.size(); i++) {
+            List<Text.Line> lines = blocks.get(i).getLines();
+            for (int j = 0; j < lines.size(); j++) {
+                List<Text.Element> elements = lines.get(j).getElements();
+                for (int k = 0; k < elements.size(); k++) {
+                    if (elements.get(k).getText().matches(".*\\d.*") || elements.get(k).getText().length() < 3) {
+                        continue;
+                    }
+                    Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
+                    mGraphicOverlay.add(textGraphic);
+                    Log.i("checkText", elements.get(k).getText());
+                }
+            }
+        }
+    }
 
+    private void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    // Functions for loading images from app assets.
+
+    // Returns max image width, always for portrait mode. Caller needs to swap width / height for
+    // landscape mode.
+    private Integer getImageMaxWidth() {
+        if (mImageMaxWidth == null) {
+            // Calculate the max width in portrait mode. This is done lazily since we need to
+            // wait for
+            // a UI layout pass to get the right values. So delay it to first time image
+            // rendering time.
+            mImageMaxWidth = mImageView.getWidth();
+        }
+
+        return mImageMaxWidth;
+    }
+
+    // Returns max image height, always for portrait mode. Caller needs to swap width / height for
+    // landscape mode.
+    private Integer getImageMaxHeight() {
+        if (mImageMaxHeight == null) {
+            // Calculate the max width in portrait mode. This is done lazily since we need to
+            // wait for
+            // a UI layout pass to get the right values. So delay it to first time image
+            // rendering time.
+            mImageMaxHeight =
+                    mImageView.getHeight();
+
+        }
+
+        return mImageMaxHeight;
+    }
+
+    // Gets the targeted width / height.
+    private Pair<Integer, Integer> getTargetedWidthHeight() {
+        int targetWidth;
+        int targetHeight;
+        int maxWidthForPortraitMode = getImageMaxWidth();
+        int maxHeightForPortraitMode = getImageMaxHeight();
+        targetWidth = maxWidthForPortraitMode;
+        targetHeight = maxHeightForPortraitMode;
+        return new Pair<>(targetWidth, targetHeight);
+    }
+
+    public void getImage() {
+        presentImage("pompom.jpg");
+    }
+
+    public void getImage(String imageName) {
+        presentImage(imageName);
+    }
+
+    public void presentImage(String imageName) {
+        mGraphicOverlay.clear();
+        //mSelectedImage = getBitmapFromAsset(this, imageName);
+        mSelectedImage = BitmapFactory.decodeFile(imageName);
+        if (mSelectedImage != null) {
+            // Get the dimensions of the View
+            Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
+
+            int targetWidth = targetedSize.first;
+            int maxHeight = targetedSize.second;
+
+            // Determine how much to scale down the image
+            float scaleFactor =
+                    Math.max(
+                            (float) mSelectedImage.getWidth() / (float) targetWidth,
+                            (float) mSelectedImage.getHeight() / (float) maxHeight);
+
+            Bitmap resizedBitmap =
+                    Bitmap.createScaledBitmap(
+                            mSelectedImage,
+                            (int) (mSelectedImage.getWidth() / scaleFactor),
+                            (int) (mSelectedImage.getHeight() / scaleFactor),
+                            true);
+
+            mImageView.setImageBitmap(resizedBitmap);
+            mSelectedImage = resizedBitmap;
+        }
+    }
+
+    public static Bitmap getBitmapFromAsset(Context context, String filePath) {
+        AssetManager assetManager = context.getAssets();
+
+        InputStream is;
+        Bitmap bitmap = null;
+        try {
+            is = assetManager.open(filePath);
+            bitmap = BitmapFactory.decodeStream(is);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
 }
