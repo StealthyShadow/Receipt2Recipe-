@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class MainActivity2 extends AppCompatActivity {
 
     SQLiteDatabase sqLiteDatabase;
     public static ArrayList<Ingredient> ingredients = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,8 @@ public class MainActivity2 extends AppCompatActivity {
         for (Ingredient ingredient: ingredients){
             displayIngredients.add(String.format("%s", ingredient.getName()));
         }
+
+
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,displayIngredients);
         ListView listView = (ListView) findViewById(R.id.ingredientList);
         listView.setAdapter(adapter);
@@ -53,6 +57,15 @@ public class MainActivity2 extends AppCompatActivity {
                 sqLiteDatabase.close();
             }
         });
+
+        Button findRecipes = (Button) findViewById(R.id.FindRecipes);
+        findRecipes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addRecipes(view);
+            }
+        });
+
     }
     public void addMoreIngredients(View view){
         Intent intent = new Intent(this,MainActivity.class);
@@ -60,4 +73,32 @@ public class MainActivity2 extends AppCompatActivity {
 
 
     }
+
+    public void addRecipes(View view){
+        Intent intent = new Intent(this, recipes.class);
+
+        String ingredientString = createStringFromList(ingredients);
+        intent.putExtra("message", ingredientString);
+
+        startActivity(intent);
+
+
+    }
+
+    public String createStringFromList(ArrayList<Ingredient> ingredients){
+        String strIngredients = "";
+        Log.i("Info", "ingredients are: " + String.valueOf(ingredients));
+        for(int i = 0; i < ingredients.size(); i++){
+            Log.i("Info", strIngredients + String.valueOf(i));
+            strIngredients += ingredients.get(i).getName();
+            if(i != ingredients.size()-1){
+                strIngredients += ",";
+            }
+
+        }
+        return strIngredients;
+    }
+
+
+
 }

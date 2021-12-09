@@ -49,7 +49,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-import com.spoonacular.IngredientsApi;
+//import com.spoonacular.IngredientsApi;
 
 public class MainActivity extends AppCompatActivity {
     SQLiteDatabase sqLiteDatabase;

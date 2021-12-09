@@ -3,12 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/File Libraries/New folder (2)/Programming/Receipt2Recipe-/app/src/main/res/layout/activity_main.xml" value="0.11" />
         <entry key="..\:/Users/qosai/AndroidStudioProjects/MyApplication2/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/qosai/AndroidStudioProjects/Receipt2Recipe-/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/Users/qosai/AndroidStudioProjects/Receipt2Recipe-/app/src/main/res/layout/activity_main2.xml" value="0.4" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.20018115942028986" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.20018115942028986" />
+        <entry key="app/src/main/res/layout/activity_recipies.xml" value="0.16354166666666667" />
+        <entry key="app/src/main/res/layout/recipe_linear_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/text_row_item.xml" value="0.1" />
       </map>
     </option>
   </component>
