@@ -31,6 +31,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.spoonacular.API_KEY"
+            android:value="b3c36d18299c4c69824ac3a330ea596e"
+            />
     </application>
 
 </manifest>
