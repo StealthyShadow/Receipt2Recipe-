@@ -82,7 +82,6 @@ public class MainActivity2 extends AppCompatActivity {
 
         startActivity(intent);
 
-
     }
 
     public String createStringFromList(ArrayList<Ingredient> ingredients){
