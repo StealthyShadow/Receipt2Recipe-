@@ -280,6 +280,18 @@ public class MainActivity extends AppCompatActivity {
                         });
     }
 
+    public static boolean isUpperCase(String s)
+    {
+        for (int i=0; i<s.length(); i++)
+        {
+            if (!Character.isUpperCase(s.charAt(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private void processTextRecognitionResult(Text texts) {
         List<Text.TextBlock> blocks = texts.getTextBlocks();
 
@@ -291,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
         mGraphicOverlay.clear();
         for (int i = 0; i < blocks.size(); i++) {
             List<Text.Line> lines = blocks.get(i).getLines();
+            String word = "";
             for (int j = 0; j < lines.size(); j++) {
                 List<Text.Element> elements = lines.get(j).getElements();
                 for (int k = 0; k < elements.size(); k++) {
@@ -299,11 +312,22 @@ public class MainActivity extends AppCompatActivity {
                     }
                     Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
                     mGraphicOverlay.add(textGraphic);
-                    textblocks.add(elements.get(k).getText());
+
+                    if(isUpperCase(elements.get(k).getText())){
+                        word += elements.get(k).getText();
+                        if(k != elements.size()-1 && !word.equals("") && word.length() > 1){
+                            word += " ";
+                        }
+                    }
+
                 }
+                if(!word.equals("") && !word.equals(" ")) {
+                    textblocks.add(word);
+                }
+                word = "";
             }
         }
-        Log.i("checkText", String.valueOf(textblocks));
+
         Context context = getApplicationContext();
         sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
         DBHelper db = new DBHelper(sqLiteDatabase);
@@ -314,7 +338,15 @@ public class MainActivity extends AppCompatActivity {
         removals.add("DATE");
         removals.add("SPECIAL");
         removals.add("NET");
+        removals.add("NET ");
+        removals.add("SPECIAL ");
+        removals.add("SUBTOTAL");
+        removals.add("LOYALTY");
+        removals.add("TOTAL");
+        removals.add("CASH");
+        removals.add("CHANGE");
         textblocks.removeAll(removals);
+        Log.i("checkText", String.valueOf(textblocks));
         for (int i = 0; i < textblocks.size(); i++) {
             db.saveIngredients(textblocks.get(i), "user");
         }
