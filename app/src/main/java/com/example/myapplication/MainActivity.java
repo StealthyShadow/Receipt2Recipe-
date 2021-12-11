@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import android.content.res.AssetManager;
@@ -286,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
             showToast("No text found");
             return;
         }
-
+        List<String> textblocks = new ArrayList<>();
         mGraphicOverlay.clear();
         for (int i = 0; i < blocks.size(); i++) {
             List<Text.Line> lines = blocks.get(i).getLines();
@@ -298,9 +299,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                     Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
                     mGraphicOverlay.add(textGraphic);
-                    Log.i("checkText", elements.get(k).getText());
+                    textblocks.add(elements.get(k).getText());
                 }
             }
+        }
+        Log.i("checkText", String.valueOf(textblocks));
+        Context context = getApplicationContext();
+        sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
+        DBHelper db = new DBHelper(sqLiteDatabase);
+        //clear database
+        sqLiteDatabase.execSQL("delete from "+ "ingredients");;
+        //remove list
+        ArrayList<String> removals = new ArrayList<String>();
+        removals.add("DATE");
+        removals.add("SPECIAL");
+        removals.add("NET");
+        textblocks.removeAll(removals);
+        for (int i = 0; i < textblocks.size(); i++) {
+            db.saveIngredients(textblocks.get(i), "user");
         }
     }
 
