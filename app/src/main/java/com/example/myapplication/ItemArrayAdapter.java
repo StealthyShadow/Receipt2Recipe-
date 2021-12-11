@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.myapplication.ItemArrayAdapter;
 import com.example.myapplication.R;
@@ -79,9 +82,8 @@ public class ItemArrayAdapter extends RecyclerView.Adapter<com.example.myapplica
         }
 
 
-
         RequestQueue requestQueueLink;
-        JSONArray JSONresponse;
+        JSONObject JSONresponse;
         int responsecounterLink = 0;
 
         private void getRecipeLinks(String ID, int position){
@@ -89,30 +91,22 @@ public class ItemArrayAdapter extends RecyclerView.Adapter<com.example.myapplica
                 Log.i("ERROR", "Recipe ID is NULL");
             }else {
                 String url = "https://api.spoonacular.com/recipes/" + ID + "/information?apiKey=b3c36d18299c4c69824ac3a330ea596e";
-                Log.i("Info1", url);
+//                Log.i("Info1", url);
 //                Log.i("Info1: Context", String.valueOf(context));
                 requestQueueLink = Volley.newRequestQueue(context);
 //                Log.i("Info1", "about to call onResponse in getRecipeLinks");
-                JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse(JSONArray response) {
-                        Log.i("Info1", "called onResponse");
+                    public void onResponse(JSONObject response) {
+//                        Log.i("Info1", "called onResponse");
                         try {
-                            Log.i("Info1", String.valueOf(response == null));
+//                            Log.i("Info1", String.valueOf(response == null));
                             JSONresponse = response;
+//                            Log.i("Info1", String.valueOf(JSONresponse));
+                            JSONObject jsonObject1 = new JSONObject(response.toString());
+                            itemList.get(position).setLink(jsonObject1.optString("spoonacularSourceUrl"));
 
-                            Log.i("Info1", String.valueOf(JSONresponse.getJSONObject(23)));
-
-                            Log.i("Info1", String.valueOf(JSONresponse));
-                            for (int i = 0; i < JSONresponse.length(); i++) {
-                                JSONObject jsonObject1;
-                                jsonObject1 = JSONresponse.getJSONObject(i);
-                                Log.i("Info2", jsonObject1.toString());
-                                itemList.get(position).setLink(jsonObject1.optString("spoonacularSourceUrl"));
-
-                            }
                             responsecounterLink--;
 
                             if (responsecounterLink == 0) {
@@ -124,23 +118,24 @@ public class ItemArrayAdapter extends RecyclerView.Adapter<com.example.myapplica
                         }
                     }
                 },
-                        new Response.ErrorListener() {
-                            @SuppressLint("LongLogTag")
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.i("the res is error in second call:", error.toString());
-                            }
+                    new Response.ErrorListener() {
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i("the res is error in second call:", error.toString());
                         }
+                    }
                 );
 
                 responsecounterLink++;
                 requestQueueLink.add(jsonObjectRequest);
-//        return recipeList;
             }
     }
 
     public void launchRecipeLink(String link){
-        Log.i("Info", link);
+        Log.i("Info at link launch", link);
+        Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(link));
+        context.startActivity(intent);
     }
 
         // Static inner class to initialize the views of rows
@@ -155,7 +150,7 @@ public class ItemArrayAdapter extends RecyclerView.Adapter<com.example.myapplica
             }
             @Override
             public void onClick(View view) {
-                Log.d("onclick", "onClick " + getLayoutPosition() + " " + item.getText());
+
             }
         }
     }
