@@ -8,14 +8,24 @@ public class Recipe {
     private String image;
     private int missedIngredientCount;
     private List<String> missedIngredients;
+    private String linkToWebpage;
 
-    public Recipe(String id, String title, String image){
+    public Recipe(String id, String title, String image, String linkToWebpage){
         this.id = id;
         this.title = title;
         this.image = image;
 //        this.missedIngredientCount = missedIngredientCount;
 //        this.missedIngredients = missedIngredients;
     }
+
+    public void setLink(String link){
+        this.linkToWebpage = link;
+    }
+
+    public String getLink(){
+        return this.linkToWebpage;
+    }
+
 
     public String getid(){
         return this.id;

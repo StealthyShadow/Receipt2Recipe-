@@ -35,7 +35,9 @@ public class recipes extends AppCompatActivity {
     private JSONArray JSONresponse;
     private List<Recipe> recipeList = new ArrayList<>();
     RequestQueue requestQueue;
+    RequestQueue requestQueueLink;
     int responsecounter = 0;
+    int responsecounterLink = 0;
     RecyclerView recipeDisplay;
 
     @Override
@@ -48,29 +50,32 @@ public class recipes extends AppCompatActivity {
         String ingredients = bundle.getString("message");
         createRecipes(ingredients);
 
+
 //        createRecipes("beef,carrots,onions");
 
     }
 
+
+
     public void createRecipes(String searchText) {
         String url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=" + searchText + "&number=30&instructionsRequired=true&apiKey=b3c36d18299c4c69824ac3a330ea596e";
         requestQueue = Volley.newRequestQueue(this);
-        Log.i("Info", "about to call onResponse in createRecipes");
+//        Log.i("Info", "about to call onResponse in createRecipes");
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Listener<JSONArray>() {
 
             @Override
             public void onResponse(JSONArray response) {
-                Log.i("Info", "called onResponse");
+//                Log.i("Info", "called onResponse");
                 try {
-                    Log.i("Info", String.valueOf(response == null));
+//                    Log.i("Info", String.valueOf(response == null));
                     JSONresponse = response;
 
-                    Log.i("Info", String.valueOf(JSONresponse));
+//                    Log.i("Info", String.valueOf(JSONresponse));
                     for (int i = 0; i < JSONresponse.length(); i++) {
                         JSONObject jsonObject1;
                         jsonObject1 = JSONresponse.getJSONObject(i);
-                        recipeList.add(new Recipe(jsonObject1.optString("id"), jsonObject1.optString("title"), jsonObject1.optString("image")));
-                        Log.i("Info", "recipe added");
+                        recipeList.add(new Recipe(jsonObject1.optString("id"), jsonObject1.optString("title"), jsonObject1.optString("image"), null));
+//                        Log.i("Info", "recipe added");
                     }
                     responsecounter--;
 
@@ -96,9 +101,57 @@ public class recipes extends AppCompatActivity {
 //        return recipeList;
     }
 
+
+//    private void getRecipeLinks(String ID){
+//        String url = "https://api.spoonacular.com/recipes/"+ID+"/information?apiKey=b3c36d18299c4c69824ac3a330ea596e";
+//        requestQueueLink = Volley.newRequestQueue(this);
+//        Log.i("Info", "about to call onResponse in createRecipes");
+//        JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Listener<JSONArray>() {
+//
+//
+//
+//            @Override
+//            public void onResponse(JSONArray response) {
+//                Log.i("Info", "called onResponse");
+//                try {
+//                    Log.i("Info", String.valueOf(response == null));
+//                    JSONresponse = response;
+//
+//                    Log.i("Info", String.valueOf(JSONresponse));
+//                    for (int i = 0; i < JSONresponse.length(); i++) {
+//                        JSONObject jsonObject1;
+//                        jsonObject1 = JSONresponse.getJSONObject(i);
+//                        recipeList.get("id")
+//                    (new Recipe(jsonObject1.optString("id"), jsonObject1.optString("title"), jsonObject1.optString("image")));
+//                        Log.i("Info", "recipe added");
+//                    }
+//                    responsecounterLink--;
+//
+//                    if (responsecounterLink == 0) {
+//                        launchRecipes();
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Log.i("the res is error:", error.toString());
+//                    }
+//                }
+//        );
+//
+//        responsecounterLink++;
+//        requestQueueLink.add(jsonObjectRequest);
+////        return recipeList;
+//    }
+
     private void launchRecipes() {
 
-        ItemArrayAdapter adapter = new ItemArrayAdapter(R.layout.recipe_linear_layout, new ArrayList<Recipe>(recipeList));
+        ItemArrayAdapter adapter = new ItemArrayAdapter(R.layout.recipe_linear_layout, new ArrayList<Recipe>(recipeList), this);
         recipeDisplay = (RecyclerView) findViewById(R.id.recyclerView);
         recipeDisplay.setLayoutManager(new LinearLayoutManager(this));
         recipeDisplay.setItemAnimator(new DefaultItemAnimator());
