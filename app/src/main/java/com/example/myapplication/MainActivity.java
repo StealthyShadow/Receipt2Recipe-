@@ -50,7 +50,6 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.PriorityQueue;
 
-
 //import com.spoonacular.IngredientsApi;
 
 public class MainActivity extends AppCompatActivity {
@@ -281,19 +280,6 @@ public class MainActivity extends AppCompatActivity {
                         });
     }
 
-
-    public static boolean isUpperCase(String s)
-    {
-        for (int i=0; i<s.length(); i++)
-        {
-            if (!Character.isUpperCase(s.charAt(i)))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private void processTextRecognitionResult(Text texts) {
         List<Text.TextBlock> blocks = texts.getTextBlocks();
 
@@ -305,35 +291,16 @@ public class MainActivity extends AppCompatActivity {
         mGraphicOverlay.clear();
         for (int i = 0; i < blocks.size(); i++) {
             List<Text.Line> lines = blocks.get(i).getLines();
-            String word = "";
             for (int j = 0; j < lines.size(); j++) {
                 List<Text.Element> elements = lines.get(j).getElements();
-
                 for (int k = 0; k < elements.size(); k++) {
                     if (elements.get(k).getText().matches(".*\\d.*") || elements.get(k).getText().length() < 3) {
                         continue;
                     }
-
                     Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
                     mGraphicOverlay.add(textGraphic);
-                    Log.i("element check", elements.get(k).getText());
-                    if(isUpperCase(elements.get(k).getText())){
-                        word += elements.get(k).getText();
-                        if(k != elements.size()-1 && !word.equals("")){
-                            word += " ";
-                        }
-                    }else{
-                        word = "";
-                        break;
-                    }
-//                    textblocks.add(elements.get(k).getText());
-                    Log.i("concat check", word);
+                    textblocks.add(elements.get(k).getText());
                 }
-                Log.i("Word check", word);
-                if(!word.equals("") && !word.equals(" ")){
-                    textblocks.add(word);
-                }
-                word = "";
             }
         }
         Log.i("checkText", String.valueOf(textblocks));
@@ -341,25 +308,13 @@ public class MainActivity extends AppCompatActivity {
         sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
         DBHelper db = new DBHelper(sqLiteDatabase);
         //clear database
-//        sqLiteDatabase.execSQL("delete from "+ "ingredients");;
+        sqLiteDatabase.execSQL("delete from "+ "ingredients");;
         //remove list
         ArrayList<String> removals = new ArrayList<String>();
         removals.add("DATE");
         removals.add("SPECIAL");
         removals.add("NET");
-        removals.add("NET ");
-        removals.add(" ");
-        removals.add("");
-        removals.add("SUBTOTAL");
-        removals.add("CASH");
-        removals.add("CHANGE");
-        removals.add("------------");
-        removals.add("TOTAL");
-        removals.add("LOYALTY");
-        removals.add("FOR ");
-
         textblocks.removeAll(removals);
-        Log.i("textbox", String.valueOf(textblocks));
         for (int i = 0; i < textblocks.size(); i++) {
             db.saveIngredients(textblocks.get(i), "user");
         }
