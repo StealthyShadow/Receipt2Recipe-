@@ -314,6 +314,12 @@ public class MainActivity extends AppCompatActivity {
         removals.add("DATE");
         removals.add("SPECIAL");
         removals.add("NET");
+        removals.add("SUBTOTAL");
+        removals.add("LOYALTY");
+        removals.add("WED");
+        removals.add("TOTAL");
+        removals.add("CHANGE");
+        removals.add("CASH");
         textblocks.removeAll(removals);
         for (int i = 0; i < textblocks.size(); i++) {
             db.saveIngredients(textblocks.get(i), "user");
