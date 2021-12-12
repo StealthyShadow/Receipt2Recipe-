@@ -21,6 +21,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -318,8 +319,9 @@ public class MainActivity extends AppCompatActivity {
                         continue;
                     }
 
-//                    Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
-//                    mGraphicOverlay.add(textGraphic);
+                    //enables graphic overlay
+                    //Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
+                    //mGraphicOverlay.add(textGraphic);
 
                     if(isUpperCase(elements.get(k).getText())){
                         word += elements.get(k).getText();

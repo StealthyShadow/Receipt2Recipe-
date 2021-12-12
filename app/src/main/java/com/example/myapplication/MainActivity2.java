@@ -112,6 +112,24 @@ public class MainActivity2 extends AppCompatActivity {
             }
         });
 
+        ArrayList<String> emptyList = new ArrayList<>();
+        ArrayAdapter emptyAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, emptyList);
+
+        Button removeAll = findViewById(R.id.wipeButton);
+
+        removeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = getApplicationContext();
+                sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
+                DBHelper db = new DBHelper(sqLiteDatabase);
+                listView.setAdapter(emptyAdapter);
+                db.clearIngredients();
+                ingredients = db.readIngredients("user");
+                sqLiteDatabase.close();
+            }
+        });
+
         Button findRecipes = (Button) findViewById(R.id.FindRecipes);
         findRecipes.setOnClickListener(new View.OnClickListener() {
             @Override

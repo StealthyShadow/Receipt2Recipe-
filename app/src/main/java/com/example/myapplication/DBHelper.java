@@ -53,5 +53,10 @@ public class DBHelper {
         sqLiteDatabase.execSQL(String.format("DELETE FROM ingredients WHERE name = '%s'",ingred));
     }
 
+    public void clearIngredients() {
+        createTable();
+        sqLiteDatabase.execSQL(String.format("DELETE FROM ingredients"));
+    }
+
 
 }

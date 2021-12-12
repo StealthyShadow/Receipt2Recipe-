@@ -10,157 +10,145 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".MainActivity">
 
-        <TableLayout
-            android:id="@+id/tableLayout"
+        <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to Reciept2Recipe"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textSize="34sp"
+            app:layout_constraintTop_toTopOf="@+id/scrollView"/>
+
+        <Button
+            android:id="@+id/viewButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="viewIngredients"
+            android:layout_gravity="center"
+            android:text="View Ingredient List"
+            app:layout_constraintTop_toBottomOf="@+id/welcomeText"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:id="@+id/AddText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Ingredients Manually"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            app:layout_constraintTop_toBottomOf="@+id/viewButton"
+            android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+            android:id="@+id/LinearLayout01"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintTop_toBottomOf="@+id/AddText">
 
-            <TableRow
-                android:id="@+id/row1"
-                app:layout_constraintTop_toTopOf="parent">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ingredientEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Enter Ingredient Here"
+                android:textAlignment="center"
+                android:layout_marginRight="5dp"/>
 
-                <TextView
-                    android:id="@+id/welcomeText"
-                    android:layout_width="360dp"
-                    android:layout_height="100dp"
-                    android:text="Welcome to Reciept2Recipe"
-                    android:textAlignment="center"
-                    android:textSize="34sp"
-                    app:layout_constraintTop_toTopOf="@+id/tableLayout"/>
-            </TableRow>
+            <ImageButton
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@android:drawable/ic_menu_save"
+                android:onClick="saveIngredient"
+                android:layout_marginLeft="5dp"/>
+        </LinearLayout>
 
-            <TableRow android:id="@+id/row2">
+        <TextView
+            android:id="@+id/AddText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Ingredients From Receipt"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            app:layout_constraintTop_toBottomOf="@+id/LinearLayout01"
+            android:layout_marginTop="20dp"/>
 
-                <TextView
-                    android:id="@+id/ingredientRequest"
-                    android:layout_width="0dp"
-                    android:layout_height="70dp"
-                    android:text="Which ingredients do you have?"
-                    android:textAlignment="center"
-                    android:textSize="25sp"
-                    app:layout_constraintTop_toBottomOf="@+id/welcomeText"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
 
-            </TableRow>
+        <LinearLayout
+            android:id="@+id/LinearLayout02"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintTop_toBottomOf="@+id/AddText2"
+            android:layout_marginTop="10dp">
 
-            <TableRow android:id="@+id/row3">
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:onClick="takePicture"
+                app:srcCompat="@android:drawable/ic_menu_camera"
+                tools:ignore="SpeakableTextPresentCheck"
+                android:layout_marginRight="10dp"/>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ingredientEditText"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:hint="Enter Ingredients Manually Here"
-                    android:textAlignment="center"
-                    app:layout_constraintTop_toBottomOf="@+id/ingredientRequest"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
-            </TableRow>
+            <Button
+                android:id="@+id/textButton"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:text="Scan Receipt"
+                app:srcCompat="@android:drawable/ic_menu_camera"
+                tools:ignore="SpeakableTextPresentCheck"
+                android:layout_marginLeft="10dp"/>
+        </LinearLayout>
 
-            <TableRow android:id="@+id/row4">
-
-                <Button
-                    android:id="@+id/saveButton"
-                    android:layout_width="162dp"
-                    android:layout_height="50dp"
-                    android:onClick="saveIngredient"
-                    android:text="Save Ingredient "
-                    app:layout_constraintTop_toBottomOf="@+id/ingredientEditText"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>
-            </TableRow>
-
-            <TableRow android:id="@+id/row5">
-
-                <Button
-                    android:id="@+id/viewButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:onClick="viewIngredients"
-                    android:text="View Ingredient List"
-                    app:layout_constraintTop_toBottomOf="@+id/saveButton"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"/>/>
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/row6">
-
-                <ImageButton
-                    android:id="@+id/imageButton"
-                    android:layout_width="20dp"
-                    android:layout_height="100dp"
-                    android:onClick="takePicture"
-                    app:layout_constraintTop_toBottomOf="@+id/viewButton"
-                    app:srcCompat="@android:drawable/ic_menu_camera"
-                    tools:ignore="SpeakableTextPresentCheck"
-                    android:layout_marginLeft="100dp"
-                    android:layout_marginRight="100dp"/>
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/row7">
-
-                <Button
-                    android:id="@+id/textButton"
-                    android:layout_width="20dp"
-                    android:layout_height="100dp"
-                    android:text="Scan Receipt"
-                    app:layout_constraintTop_toBottomOf="@+id/imageButton"
-                    app:srcCompat="@android:drawable/ic_menu_camera"
-                    tools:ignore="SpeakableTextPresentCheck"
-                    android:layout_marginLeft="100dp"
-                    android:layout_marginRight="100dp"/>
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/row8"
+        <FrameLayout
+            android:id="@+id/LinearLayout03"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintTop_toBottomOf="@+id/LinearLayout02"
+            android:layout_marginTop="10dp"
+            tools:ignore="Orientation">
+            <ImageView
+                android:id="@+id/imageView2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                app:layout_constraintBottom_toTopOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="parent"
+                app:layout_constraintVertical_bias="0.439"
+                android:layout_margin="20dp"/>
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="20dp"
-                    android:scaleType="fitStart"
-                    android:visibility="invisible"
-                    app:layout_constraintTop_toBottomOf="@+id/imageButton"
-                    app:srcCompat="@drawable/ic_launcher_foreground"
-                    android:adjustViewBounds="true" />
+            <com.example.myapplication.GraphicOverlay
+                android:id="@+id/graphic_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="@+id/imageView2"
+                app:layout_constraintRight_toRightOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="@+id/imageView2"
+                app:layout_constraintVertical_bias="0.0"
+                android:layout_margin="20dp"/>
+        </FrameLayout>
 
-                <com.example.myapplication.GraphicOverlay
-                    android:id="@+id/graphic_overlay"
-                    android:layout_width="320dp"
-                    android:layout_height="fill_parent"
-                    android:layout_alignParentStart="true"
-                    app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="@+id/imageView2"
-                    app:layout_constraintRight_toRightOf="@+id/imageView2"
-                    app:layout_constraintTop_toTopOf="@+id/imageView2"
-                    app:layout_constraintVertical_bias="0.0"
-                    android:layout_marginLeft="-340dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_below="@+id/imageView2"
-                    android:layout_alignStart="@+id/imageView2"
-                    android:layout_alignEnd="@+id/imageView2"/>
-            </TableRow>
-
-        </TableLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </ScrollView>
 
