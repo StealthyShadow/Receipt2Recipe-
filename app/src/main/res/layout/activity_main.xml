@@ -114,7 +114,7 @@
                     android:id="@+id/textButton"
                     android:layout_width="20dp"
                     android:layout_height="100dp"
-                    android:text="Text"
+                    android:text="Scan Receipt"
                     app:layout_constraintTop_toBottomOf="@+id/imageButton"
                     app:srcCompat="@android:drawable/ic_menu_camera"
                     tools:ignore="SpeakableTextPresentCheck"

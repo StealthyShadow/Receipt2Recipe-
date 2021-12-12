@@ -257,6 +257,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void runTextRecognition() {
+        if (mSelectedImage == null) {
+            Toast toast = Toast.makeText(this.getApplicationContext(), "Please upload a receipt before attempting to scan", Toast.LENGTH_SHORT);
+            toast.show();
+
+            return;
+        }
+
         InputImage image = InputImage.fromBitmap(mSelectedImage, 0);
         TextRecognizer recognizer = TextRecognition.getClient();
         mTextButton.setEnabled(false);
@@ -310,8 +317,9 @@ public class MainActivity extends AppCompatActivity {
                     if (elements.get(k).getText().matches(".*\\d.*") || elements.get(k).getText().length() < 3) {
                         continue;
                     }
-                    Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
-                    mGraphicOverlay.add(textGraphic);
+
+//                    Graphic textGraphic = new TextGraphic(mGraphicOverlay, elements.get(k));
+//                    mGraphicOverlay.add(textGraphic);
 
                     if(isUpperCase(elements.get(k).getText())){
                         word += elements.get(k).getText();
@@ -327,6 +335,9 @@ public class MainActivity extends AppCompatActivity {
                 word = "";
             }
         }
+
+        Toast toast = Toast.makeText(this.getApplicationContext(), "Receipt successfully scanned!", Toast.LENGTH_SHORT);
+        toast.show();
 
         Context context = getApplicationContext();
         sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);

@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,8 @@ public class MainActivity2 extends AppCompatActivity {
                 adapter.remove(toRemove);
                 Log.i("INFO", "onItemClick:" + str);
                 db.deleteIngredient(str);
+                ingredients = db.readIngredients("user");
+
                 sqLiteDatabase.close();
             }
         });
@@ -62,7 +65,13 @@ public class MainActivity2 extends AppCompatActivity {
         findRecipes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addRecipes(view);
+                Log.i("ingredients length", String.valueOf(ingredients.size()));
+                if (ingredients.size() == 0) {
+                    Toast toast = Toast.makeText(view.getContext(), "No ingredients available", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    addRecipes(view);
+                }
             }
         });
 
