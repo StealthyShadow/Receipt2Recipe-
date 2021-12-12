@@ -1,24 +1,33 @@
 package com.example.myapplication;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
 public class MainActivity2 extends AppCompatActivity {
-
+    private String m_Text = "";
     SQLiteDatabase sqLiteDatabase;
     public static ArrayList<Ingredient> ingredients = new ArrayList<>();
 
@@ -47,17 +56,59 @@ public class MainActivity2 extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Context context = getApplicationContext();
-                sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
-                DBHelper db = new DBHelper(sqLiteDatabase);
-                Object toRemove = adapter.getItem(position);
-                String str = toRemove.toString();
-                adapter.remove(toRemove);
-                Log.i("INFO", "onItemClick:" + str);
-                db.deleteIngredient(str);
-                ingredients = db.readIngredients("user");
+                PopupMenu menu = new PopupMenu(MainActivity2.this,view);
+                menu.getMenuInflater().inflate(R.menu.ingredient_menu,menu.getMenu());
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                       if(menuItem.getTitle().equals("Delete Ingredient")){
+                           Context context = getApplicationContext();
+                           sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
+                           DBHelper db = new DBHelper(sqLiteDatabase);
+                           Object toRemove = adapter.getItem(position);
+                           String str = toRemove.toString();
+                           adapter.remove(toRemove);
+                           //Log.i("INFO", "onItemClick:" + str);
+                           db.deleteIngredient(str);
+                           sqLiteDatabase.close();
+                           return true;
+                       }
+                       else{
+                           AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity2.this);
+                           builder.setTitle("Edit Ingredient");
+                           final EditText input = new EditText(MainActivity2.this);
+                           input.setHint("Type Here");
+                           builder.setView(input);
 
-                sqLiteDatabase.close();
+                           builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                               @Override
+                               public void onClick(DialogInterface dialog, int which) {
+                                   m_Text = input.getText().toString();
+                                   ingredients.set(position,new Ingredient(m_Text,"user"));
+                                   Context context = getApplicationContext();
+                                   sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
+                                   DBHelper db = new DBHelper(sqLiteDatabase);
+                                   Object toRemove = adapter.getItem(position);
+                                   String str = toRemove.toString();
+                                   adapter.remove(toRemove);
+                                   db.deleteIngredient(str);
+                                   db.saveIngredients(m_Text,"user");
+                                   adapter.add(m_Text);
+                                   sqLiteDatabase.close();
+                               }
+                           });
+                           builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                               @Override
+                               public void onClick(DialogInterface dialog, int which) {
+                                   dialog.cancel();
+                               }
+                           });
+                           builder.show();
+                           return true;
+                       }
+                    }
+                });
+                menu.show();
             }
         });
 
