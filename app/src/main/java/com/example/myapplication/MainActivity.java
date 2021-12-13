@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,12 +32,17 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import android.content.res.AssetManager;
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+
 import android.util.Pair;
 import android.widget.Button;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -64,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private Integer mImageMaxWidth;
     // Max height (portrait mode)
     private Integer mImageMaxHeight;
+    public Uri mImageUri;
 
     private static final int RESULTS_TO_SHOW = 3;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 101;
@@ -120,14 +127,13 @@ public class MainActivity extends AppCompatActivity {
             chooseImage(MainActivity.this);
         }
 
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        try {
-
-        } catch (ActivityNotFoundException e) {
-            // display error state to the user
-        }
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        try {
+//
+//        } catch (ActivityNotFoundException e) {
+//            // display error state to the user
+//        }
     }
-
 
     private void chooseImage(Context context){
 
@@ -146,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
                 if(optionsMenu[i].equals("Take Photo")){
 
                     // Open the camera and get the photo
-
                     Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(takePicture,0);
                 }
@@ -190,7 +195,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    public void grabImage(ImageView imageView)
+    {
+        this.getContentResolver().notifyChange(mImageUri, null);
+        ContentResolver cr = this.getContentResolver();
+        Bitmap bitmap;
+        try
+        {
+            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            imageView.setImageBitmap(bitmap);
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Failed to load", e);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
