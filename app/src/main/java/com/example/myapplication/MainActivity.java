@@ -206,7 +206,10 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
                         String imgsave = MediaStore.Images.Media.insertImage(getContentResolver(), selectedImage, UUID.randomUUID().toString()+".png", "image");
 
-
+                        presentImage(selectedImage);
+                        ImageView imageView = (ImageView) findViewById(R.id.imageView2);
+                        //imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                        imageView.setVisibility(View.VISIBLE);
                     }
                     break;
                 case 1:
@@ -345,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
         sqLiteDatabase = context.openOrCreateDatabase("ingredients", Context.MODE_PRIVATE,null);
         DBHelper db = new DBHelper(sqLiteDatabase);
         //clear database
-        sqLiteDatabase.execSQL("delete from "+ "ingredients");;
+        //sqLiteDatabase.execSQL("delete from "+ "ingredients");
         //remove list
         ArrayList<String> removals = new ArrayList<String>();
         removals.add("DATE");
@@ -424,6 +427,35 @@ public class MainActivity extends AppCompatActivity {
         mGraphicOverlay.clear();
         //mSelectedImage = getBitmapFromAsset(this, imageName);
         mSelectedImage = BitmapFactory.decodeFile(imageName);
+        if (mSelectedImage != null) {
+            // Get the dimensions of the View
+            Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
+
+            int targetWidth = targetedSize.first;
+            int maxHeight = targetedSize.second;
+
+            // Determine how much to scale down the image
+            float scaleFactor =
+                    Math.max(
+                            (float) mSelectedImage.getWidth() / (float) targetWidth,
+                            (float) mSelectedImage.getHeight() / (float) maxHeight);
+
+            Bitmap resizedBitmap =
+                    Bitmap.createScaledBitmap(
+                            mSelectedImage,
+                            (int) (mSelectedImage.getWidth() / scaleFactor),
+                            (int) (mSelectedImage.getHeight() / scaleFactor),
+                            true);
+
+            mImageView.setImageBitmap(resizedBitmap);
+            mSelectedImage = resizedBitmap;
+        }
+    }
+
+    public void presentImage(Bitmap imageMap) {
+        mGraphicOverlay.clear();
+        //mSelectedImage = getBitmapFromAsset(this, imageName);
+        mSelectedImage = imageMap;
         if (mSelectedImage != null) {
             // Get the dimensions of the View
             Pair<Integer, Integer> targetedSize = getTargetedWidthHeight();
